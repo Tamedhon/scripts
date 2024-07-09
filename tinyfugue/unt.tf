@@ -18,12 +18,12 @@
   nord norden west den des wessen dessen westen ost osten sued sueden alles \
   von im in hier an dort deine freund freundin ferne atikel zeitung \
   alle freundschaftsband konzentrationspunkte vorsicht lebenspunkte deinen \
-  fluchtrichtung nordosten nordwesten suedosten suedwesten dein deines mazoli \
-  macke mackeii yeti woa mieze alcina in im aus etwa und wer wie was wieso \
+  fluchtrichtung nordosten nordwesten suedosten suedwesten dein deines \
+  in im aus etwa und wer wie was wieso \
   weshalb warum dieser damit mit wenn denn oder entweder maste lag vielleicht \
   eines wie ja dies ausser ohne dschinn schon diese deinem deiner als ich auf \
   leider sie dieses daraus muss wobei nach wird werden suedlich noerdlich \
-  westlich oestlich na bisher gralkor eigentlich nur also aber man bei \
+  westlich oestlich na bisher eigentlich nur also aber man bei \
   ploetzlich wen jede fast offenbar um
 
 /skipsearch
