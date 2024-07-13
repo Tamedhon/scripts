@@ -12,5 +12,5 @@ if [[ $RENEW_STATUS -eq 0 && $output == *"Congratulations"* ]]; then
   cp /etc/letsencrypt/live/mud.tamedhon.de/privkey.pem /home/mud/tls/tamedhon.key
   chown mud: /home/mud/tls/*
   systemctl restart proftpd.service
-  #systemctl restart tamedhon.service
+  killall -SIGUSR2 ldmud
 fi
