@@ -3,7 +3,7 @@
 output=$(certbot renew)
 RENEW_STATUS=$?
 
-if [[ $RENEW_STATUS -eq 0 && $output == *"Congratulations"* ]]; then
+if [[ $RENEW_STATUS -eq 0 && $output != *"not yet due for renewal"* ]]; then
   rm /home/mud/tls/tamedhon.crt
   rm /home/mud/tls/tamedhon.issuer.crt
   rm /home/mud/tls/tamedhon.key
