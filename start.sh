@@ -12,5 +12,6 @@ $MUD_ROOT/bin/ldmud \
   --tls-key="${TLS_KEY}" \
   --tls-cert="${TLS_CERT}" \
   --tls-trustfile="${TLS_ISSUER}" \
-  $TELNET_PORT \
-  $TLS_PORT
+  -D TLS_PORT=${TLS_PORT} \
+  ${TELNET_PORT} \
+  ${TLS_PORT}
