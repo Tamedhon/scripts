@@ -1,9 +1,0 @@
-/load tiny.world
-/load unt.tf
-/more on
-/isize 5
-/visual on
-/gag Tick.
-/gag Tack.
-/load hilite.tf
-/set clock=24-hour
