@@ -1,5 +1,8 @@
 #!/bin/bash
 
+cd mudlib
+git pull origin main --no-edit
+cd ..
 rm -rf ldmud
 git clone https://github.com/Tamedhon/ldmud.git
 cd ldmud/src
