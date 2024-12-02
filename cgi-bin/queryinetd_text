@@ -1,0 +1,22 @@
+#!/usr/bin/perl
+
+require "./util.pl";
+
+$MUDHOST="127.0.0.1";
+$MUDPORT="4246";
+$QUERY="/var/www/html/cgi-bin/querymud";
+$EXTRA="$ENV{'REMOTE_HOST'}\[$ENV{'REMOTE_USER'}\]";
+
+if(!length($ENV{'QUERY_STRING'}))
+{
+  $QUERY_STRING="EXTRA=".$EXTRA;
+}
+else
+{
+  $QUERY_STRING="EXTRA=".$EXTRA."&".$ENV{'QUERY_STRING'};
+}
+
+$QUERY_STRING=@ARGV[0];
+open(CMD,"$QUERY $MUDHOST $MUDPORT \"REQ:query|NAME:WWW|DATA:$QUERY_STRING\"|");
+while(<CMD>) { print; } close(CMD);
+

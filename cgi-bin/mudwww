@@ -1,0 +1,60 @@
+#!/usr/bin/perl 
+
+require "./util.pl";
+
+$MUDHOST="127.0.0.1";
+$MUDPORT="4246";
+$QUERY="./querymud";
+$EXTRA="$ENV{'REMOTE_HOST'}\[$ENV{'REMOTE_USER'}\]";
+
+$NAV_HAUPT="";
+$NAV_INTER="";
+$NAV_DIV="";
+
+if(!length($ENV{'QUERY_STRING'}))
+{
+  $QUERY_STRING="EXTRA=".$EXTRA;
+}
+else
+{
+  $QUERY_STRING="EXTRA=".$EXTRA."&".$ENV{'QUERY_STRING'};
+}
+
+print "Content-Type: text/html; charset=utf-8\n";
+print "Content-Language: German\n\n";
+
+$TITLE="";
+
+if(index($QUERY_STRING, "who") > 0) {
+   $TITLE="Tamedhon MUD - Wer ist gerade online?";
+   $NAVMEN="$NAV_HAUPT > $NAV_INTER > Wer ist gerade Online?";
+}
+if(index($QUERY_STRING, "news") > 0) {
+   $TITLE="Tamedhon MUD - Was gibts neues?";
+   $NAVMEN="$NAV_HAUPT > $NAV_INTER > Die Tamedhon Presse";
+}
+if(index($QUERY_STRING, "finger") > 0) {
+   $TITLE="Tamedhon MUD - Wer ist eigentlich ...?";
+   $NAVMEN="$NAV_HAUPT > $NAV_INTER > Wer ist...";
+}
+if(index($QUERY_STRING, "topliste") > 0) {
+   $TITLE="Tamedhon MUD - Topliste";
+   $NAVMEN="$NAV_HAUPT > $NAV_DIV > Topliste";
+}
+if(index($QUERY_STRING, "stammbaum") > 0) {
+   $TITLE="Tamedhon MUD - Der Magierstammbaum";
+   $NAVMEN="$NAV_HAUPT > $NAV_DIV > Stammbaum der Magier";
+}
+if(index($QUERY_STRING, "heiratsbuch") > 0) {
+   $TITLE="Tamedhon MUD - Das Trauungsbuch: Gl&uuml;cklich verheiratet im Tamedhon";
+   $NAVMEN="$NAV_HAUPT > $NAV_DIV > Das Trauungsbuch";
+}
+
+
+cat("header");
+#print "<center><br><br>";
+#print "$QUERY $MUDHOST $MUDPORT \"REQ:www|NAME:WWW|DATA:$QUERY_STRING\"|";
+open(CMD,"$QUERY $MUDHOST $MUDPORT \"REQ:www|NAME:WWW|DATA:$QUERY_STRING\"|");
+while(<CMD>) { print; } close(CMD);
+cat("footer");
+

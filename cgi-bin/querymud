@@ -1,0 +1,106 @@
+#!/usr/bin/perl 
+
+# MorgenGrauen contribution
+# Author: Jof@mg.uni-muenster.de
+# Bugfix: leo@first.gmd.de
+#
+# revised: woody@sl.mud.de
+
+$MUDHOST="127.0.0.1";
+$MUDSERVER="www.example.com";
+
+sub alarm
+{
+  printf("\n");
+  printf("<PRE>An Error occured during data transmission (TIMEOUT).\n\n");
+  printf("The full context follows:\n\n");
+  printf("Arguments: %s %s %s\n", $ARGV[1], $ARGV[2], $ARGV[3]);
+  printf("QUERY    : %s\n", $query);
+  printf("\nPlease try again later!\n</PRE>");
+  exit 1;
+}
+
+# require "sys/socket.ph";
+
+use Socket;
+
+if ($#ARGV < 2) # 3 Args
+{
+  printf(stderr "usage: %s host port query\n",$0);
+  exit 1;
+}
+
+# UDP Kommunikation
+$proto=(getprotobyname('udp'))[2];
+
+# daher 1x socket zum senden
+socket(S,&AF_INET,&SOCK_DGRAM,$proto);
+
+# und 1x socket zum empfangen der antwort
+socket(R,&AF_INET,&SOCK_DGRAM,$proto);
+
+($name,$aliases,$addrtype,$length,@addrs)=gethostbyname($ARGV[0]);
+$that = pack("S n a4 x8",$MUDSERVER,$ARGV[1],@addrs);
+($name,$aliases,$addrtype,$length,@addrs)=gethostbyname($MUDHOST);
+$this = pack("S n a4 x8",&AF_INET,4245,@addrs);
+
+# binden von adresse für receive
+bind(R,$this) || die "Bind Alarm: $!\n";
+
+$query="UDP:4245|".$ARGV[2];
+
+# 10 sekunden (wall clocks) timeout
+$SIG{'ALRM'} = 'alarm';
+alarm(10);
+
+# senden der anfrage
+send(S,$query,0,$that);
+
+# pakete abholen
+@pkt=();
+do
+{
+  # Empfangen - wenn mehr als 10420 bytes => mehrere pakete
+  # Datenaufbau beinhaltet Paketanzahl (od. äh.) => aussprung while (--$cnt) !
+  # siehe auch 
+  #  https://github.com/ldmud/ldmud/blob/74503aaa72f874e311040097968d2c4efe6df0fb/doc/concepts/intermud.basic#L5
+  #  https://github.com/ldmud/ldmud/blob/74503aaa72f874e311040097968d2c4efe6df0fb/doc/concepts/intermud#L19
+  recv(R,$buffer,10240,0);
+  if (index($buffer,"PKT:")==0)
+  {
+	  # PKT information enthalten => analyse, wieviele pakete kommen
+    @tmp=split(':',$buffer);
+    @tmp=split('/',$tmp[3]);
+	
+	# paket-nr
+    $pktnr=$tmp[0];
+	# anzahl pakete
+    $maxpkt=$tmp[1];
+	
+	# wenn cnt noch nicht gesetzt => mit anzahl pakete initialisieren
+    $cnt=$maxpkt if (!$cnt);
+  } else
+  {
+	  # ansonsten kommt genau 1 paket
+    $cnt=$maxpkt=$pktnr=1;
+  }
+  
+  
+  if (index($buffer,"|DATA:")>=0)
+  {
+	  # wenn "DATA" vorkommt => dann ab dort die daten für dieses Paket
+    $pkt[$pktnr]=substr($buffer,index($buffer,"|DATA:")+6);
+  }
+  else
+  {
+	  # ansonsten gleich nach dem Pipe die Daten für dieses Paket
+    $pkt[$pktnr]=substr($buffer,index($buffer,"|")+1);
+  }
+} while (--$cnt);
+
+# ausgeben
+for ($i=1;$i<=$maxpkt; $i++)
+{
+  printf("%s",$pkt[$i]);
+}
+
